@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Salmón — Anatomía de un corte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+<div id="pins"></div>
+<div class="grain"></div>
+<div id="bar"></div>
+
+<header class="top">
+  <div class="brand"><b>Salmón</b> — Anatomía de un corte</div>
+  <div id="chap">Inicio</div>
+</header>
+<nav id="nav"></nav>
+
+<main>
+  <section class="chapter hero" id="top" data-kf="hero" data-title="Inicio">
+    <div class="panel">
+      <h1>Salm<em>ó</em>n</h1>
+      <div class="hero-side">
+        <p class="eyebrow">Guía de cortes · Salmo salar</p>
+        <p class="desc">Anatomía de un pescado, corte por corte. Gíralo, ábrelo y descubre qué parte va a la parrilla, cuál al sushi y cuál a la olla.</p>
+        <p class="hint"><span></span>Arrastra para girar · Desliza para diseccionar</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" data-kf="diseccion" data-title="Disección">
+    <div class="panel">
+      <p class="num">00 — La disección</p>
+      <h2>Seis cortes,<br><em>seis cocinas.</em></h2>
+      <p class="desc">La grasa, la textura y el grosor cambian de la cabeza a la cola. Saber dónde cortar es saber cómo cocinar. Toca cualquier pieza para ir a su ficha.</p>
+    </div>
+  </section>
+
+  <section class="chapter cut" id="cabeza" data-kf="cabeza" data-title="Cabeza">
+    <div class="panel">
+      <p class="num">01 — Cabeza</p>
+      <p class="eyebrow">El alma del caldillo</p>
+      <h2>Cabeza</h2>
+      <p class="desc">Huesos, cartílago y colágeno: la base del fondo más sabroso. Hervida a fuego suave da un caldillo o un fumet con cuerpo, y sus mejillas son un bocado escondido que pocos conocen.</p>
+      <div class="meta"><div class="fat" data-fat="2"><span>Grasa</span></div><ul class="chips"><li>Caldillo</li><li>Fumet</li><li>Sopa</li></ul></div>
+      <p class="tip"><b>Tip</b>Retira las agallas antes de cocinarla: amargan el caldo. 25 minutos a fuego bajo bastan.</p>
+    </div>
+  </section>
+
+  <section class="chapter cut r" id="collar" data-kf="collar" data-title="Collar">
+    <div class="panel">
+      <p class="num">02 — Collar</p>
+      <p class="eyebrow">El secreto del parrillero</p>
+      <h2>Collar <em>(kama)</em></h2>
+      <p class="desc">La pieza entre las agallas y el cuerpo, con la aleta pectoral. Tiene vetas de grasa que se caramelizan al fuego: crujiente por fuera, jugosa por dentro.</p>
+      <div class="meta"><div class="fat" data-fat="4"><span>Grasa</span></div><ul class="chips"><li>Parrilla</li><li>Horno</li><li>Teriyaki</li></ul></div>
+      <p class="tip"><b>Tip</b>Sal gruesa, fuego fuerte y la piel hacia la brasa. 8 a 10 minutos.</p>
+    </div>
+  </section>
+
+  <section class="chapter cut" id="lomo" data-kf="lomo" data-title="Lomo">
+    <div class="panel">
+      <p class="num">03 — Lomo</p>
+      <p class="eyebrow">El corte noble</p>
+      <h2>Lomo</h2>
+      <p class="desc">La parte dorsal: gruesa, pareja y firme. Sabor limpio, grasa equilibrada y la más versátil de todas. Es la que buscas para sashimi, tataki o un filete perfecto.</p>
+      <div class="meta"><div class="fat" data-fat="3"><span>Grasa</span></div><ul class="chips"><li>Sashimi</li><li>Tataki</li><li>Plancha</li></ul></div>
+      <p class="tip"><b>Tip</b>Séllalo con la piel hacia abajo y retíralo cuando el centro llegue a 50 °C: queda nacarado.</p>
+    </div>
+  </section>
+
+  <section class="chapter cut r" id="ventresca" data-kf="ventresca" data-title="Ventresca">
+    <div class="panel">
+      <p class="num">04 — Ventresca</p>
+      <p class="eyebrow">La mantequilla del mar</p>
+      <h2>Ventresca</h2>
+      <p class="desc">La panza: el corte más graso y delicado, el «toro» del salmón. Sus capas de grasa blanca se derriten en la boca, cruda o apenas pasada por fuego.</p>
+      <div class="meta"><div class="fat" data-fat="5"><span>Grasa</span></div><ul class="chips"><li>Nigiri</li><li>Aburi</li><li>Brasas</li></ul></div>
+      <p class="tip"><b>Tip</b>Córtala en láminas finas y dale un toque de soplete: la grasa hace el resto.</p>
+    </div>
+  </section>
+
+  <section class="chapter cut" id="medallones" data-kf="medallones" data-title="Medallones">
+    <div class="panel">
+      <p class="num">05 — Medallones</p>
+      <p class="eyebrow">Para el horno y la parrilla</p>
+      <h2>Medallones</h2>
+      <p class="desc">Cortes transversales con la espina al centro. El hueso protege la carne y la mantiene jugosa en cocciones largas: ideales al horno, a la parrilla o en papillote.</p>
+      <div class="meta"><div class="fat" data-fat="3"><span>Grasa</span></div><ul class="chips"><li>Horno</li><li>Parrilla</li><li>Papillote</li></ul></div>
+      <p class="tip"><b>Tip</b>Pídelos de 2,5 cm de grosor: 12 minutos a 200 °C y listo.</p>
+    </div>
+  </section>
+
+  <section class="chapter cut r" id="cola" data-kf="cola" data-title="Cola">
+    <div class="panel">
+      <p class="num">06 — Cola</p>
+      <p class="eyebrow">Magra, firme y rápida</p>
+      <h2>Cola</h2>
+      <p class="desc">Más delgada y con menos grasa. Su textura firme resiste el ácido del limón y se cocina en segundos: perfecta para preparaciones frías y frescas.</p>
+      <div class="meta"><div class="fat" data-fat="1"><span>Grasa</span></div><ul class="chips"><li>Ceviche</li><li>Tartar</li><li>Ahumado</li></ul></div>
+      <p class="tip"><b>Tip</b>Si va a la plancha, vuelta y vuelta: no más de 2 minutos por lado.</p>
+    </div>
+  </section>
+
+  <section class="chapter final" data-kf="final" data-title="Resumen">
+    <div class="panel">
+      <p class="num">Resumen</p>
+      <h2>Nada se <em>pierde.</em></h2>
+      <p class="desc">Espinas y cabeza al caldo, la piel al horno hasta que cruja, y cada corte en su cocción justa.</p>
+      <div class="grid">
+        <a href="#cabeza"><b>Cabeza</b><small>Caldillo · Fumet</small></a>
+        <a href="#collar"><b>Collar</b><small>Parrilla · Horno</small></a>
+        <a href="#lomo"><b>Lomo</b><small>Sashimi · Plancha</small></a>
+        <a href="#ventresca"><b>Ventresca</b><small>Nigiri · Aburi</small></a>
+        <a href="#medallones"><b>Medallones</b><small>Horno · Parrilla</small></a>
+        <a href="#cola"><b>Cola</b><small>Ceviche · Tartar</small></a>
+      </div>
+      <div class="foot"><span>Experimento interactivo — three.js</span><a href="#top">Volver arriba ↑</a></div>
+    </div>
+  </section>
+</main>
+
+<script src="main.js" defer></script>
+</body>
+</html>
