@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Salmón — Anatomía de un corte</title>
+<title>Salmón Atlántico — Anatomía de un corte</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -15,14 +15,19 @@
 } }
 </script>
 </head>
-<body>
+<body class="is-loading">
 <canvas id="gl" aria-hidden="true"></canvas>
 <div id="pins"></div>
 <div class="grain"></div>
 <div id="bar"></div>
 
+<div id="boot" aria-live="polite" aria-busy="true">
+  <p id="boot-msg">Entrando a las profundidades del mar<span id="boot-dots">.</span></p>
+</div>
+<canvas id="boot-bubbles" aria-hidden="true"></canvas>
+
 <header class="top">
-  <div class="brand"><b>Salmón</b> — Anatomía de un corte</div>
+  <div class="brand"><b>Salmón Atlántico</b> — Anatomía de un corte</div>
   <div id="chap">Inicio</div>
 </header>
 <nav id="nav"></nav>
@@ -30,10 +35,10 @@
 <main>
   <section class="chapter hero" id="top" data-kf="hero" data-title="Inicio">
     <div class="panel">
-      <h1>Salm<em>ó</em>n</h1>
+      <h1 id="hero-title">Salm<em>ó</em>n Atlántico</h1>
       <div class="hero-side">
         <p class="eyebrow">Guía de cortes · Salmo salar</p>
-        <p class="desc">Anatomía de un pescado, corte por corte. Gíralo, ábrelo y descubre qué parte va a la parrilla, cuál al sushi y cuál a la olla.</p>
+        <p class="desc intro">El salmón atlántico vive en aguas frías: carne rosada, vetas de grasa y un cuerpo que cambia de la cabeza a la cola. Aquí lo abrimos corte a corte para ver qué pieza va a la parrilla, al sushi o a la olla.</p>
         <p class="hint"><span></span>Arrastra para girar · Desliza para diseccionar</p>
       </div>
     </div>
@@ -131,6 +136,104 @@
   </section>
 </main>
 
+<script>
+(function () {
+  const title = document.getElementById('hero-title');
+  if (title) {
+    const letters = title.textContent.replace(/\s+/g, '').length || 6;
+    title.style.setProperty('--title-len', Math.max(6, letters));
+  }
+  const msgs = [
+    'Entrando a las profundidades del mar',
+    'Buscando un salmón',
+    'Siguiendo la corriente fría',
+    'Preparando los cortes',
+    'Casi en la superficie',
+  ];
+  const DOT_MS = 380, MSG_MS = 1200;
+  let i = -1, n = 0;
+  const msgEl = document.getElementById('boot-msg');
+  const dotsEl = document.getElementById('boot-dots');
+  const bootStart = performance.now();
+  window.__bootReadyAt = bootStart + 3400;
+  function alive() { return document.body.classList.contains('is-loading'); }
+
+  /* Burbujas + frases + puntos en el mismo rAF (sigue el reloj real si el hilo se bloquea un rato). */
+  const bc = document.getElementById('boot-bubbles');
+  const bctx = bc.getContext('2d');
+  const pool = [];
+  let raf = 0, last = bootStart;
+  function resize() {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    bc.width = Math.floor(innerWidth * dpr);
+    bc.height = Math.floor(innerHeight * dpr);
+    bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function resetBubble(b, fresh) {
+    const w = innerWidth, h = innerHeight;
+    b.x = Math.random() * w;
+    b.y = fresh ? h + Math.random() * h : Math.random() * h;
+    b.r = 4 + Math.random() * 14;
+    b.vx = (Math.random() - .5) * 16;
+    b.vy = -(18 + Math.random() * 36);
+    b.wob = Math.random() * Math.PI * 2;
+    b.a0 = .25 + Math.random() * .45;
+  }
+  resize();
+  for (let k = 0; k < 16; k++) {
+    const b = {};
+    resetBubble(b, false);
+    pool.push(b);
+  }
+  addEventListener('resize', resize);
+  function syncCopy(now) {
+    const elapsed = Math.max(0, now - bootStart);
+    const nextI = Math.floor(elapsed / MSG_MS) % msgs.length;
+    const nextN = (Math.floor(elapsed / DOT_MS) % 3) + 1;
+    if (nextI !== i) {
+      i = nextI;
+      msgEl.firstChild.textContent = msgs[i];
+      msgEl.style.opacity = '1';
+    }
+    if (nextN !== n) {
+      n = nextN;
+      dotsEl.textContent = '.'.repeat(n);
+    }
+  }
+  function frame(now) {
+    if (!alive()) return;
+    syncCopy(now);
+    const dt = Math.min(.05, (now - last) / 1000);
+    last = now;
+    bctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const b of pool) {
+      b.wob += dt * 1.6;
+      b.x += (b.vx + Math.sin(b.wob) * 10) * dt;
+      b.y += b.vy * dt;
+      if (b.y < -b.r * 2 || b.x < -40 || b.x > innerWidth + 40) resetBubble(b, true);
+      const R = b.r;
+      const a = b.a0;
+      const g = bctx.createRadialGradient(b.x - R * .25, b.y - R * .3, R * .08, b.x, b.y, R);
+      g.addColorStop(0, `rgba(255,255,255,${a})`);
+      g.addColorStop(.55, `rgba(210,236,248,${a * .55})`);
+      g.addColorStop(1, `rgba(190,220,235,0)`);
+      bctx.fillStyle = g;
+      bctx.beginPath(); bctx.arc(b.x, b.y, R, 0, Math.PI * 2); bctx.fill();
+      bctx.strokeStyle = `rgba(90,140,170,${a * .7})`;
+      bctx.lineWidth = Math.max(1, R * .07);
+      bctx.beginPath(); bctx.arc(b.x, b.y, R * .9, 0, Math.PI * 2); bctx.stroke();
+    }
+    raf = requestAnimationFrame(frame);
+  }
+  syncCopy(bootStart);
+  raf = requestAnimationFrame(frame);
+
+  window.__stopBoot = () => {
+    cancelAnimationFrame(raf);
+    bc.remove();
+  };
+})();
+</script>
 <script src="main.js" defer></script>
 </body>
 </html>
